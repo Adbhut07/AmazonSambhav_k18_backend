@@ -19,10 +19,13 @@ const firebase_admin_1 = __importDefault(require("firebase-admin"));
 const auth_route_1 = __importDefault(require("./routes/auth.route"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
-const port = 3000;
-const serviceAccount = require('../serviceAccountKey.json');
+const port = process.env.PORT || 3000;
+if (!process.env.GOOGLE_CREDS) {
+    throw new Error("GOOGLE_CREDS environment variable is not defined");
+}
+const serviceAccount = JSON.parse(process.env.GOOGLE_CREDS);
 firebase_admin_1.default.initializeApp({
-    credential: firebase_admin_1.default.credential.cert(serviceAccount),
+    credential: firebase_admin_1.default.credential.cert(serviceAccount)
 });
 console.log("Firebase Admin initialized");
 app.use(express_1.default.json()); // For parsing JSON bodies

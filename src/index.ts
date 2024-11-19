@@ -2,7 +2,6 @@ import express from 'express';
 import connectToMongoDB from './db/db';
 import dotenv from 'dotenv';
 import admin from 'firebase-admin';
-import bodyParser from 'body-parser';
 
 import authRoutes from './routes/auth.route';
 
@@ -11,10 +10,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-const serviceAccount = require('../serviceAccountKey.json');
-
+if (!process.env.GOOGLE_CREDS) {
+  throw new Error("GOOGLE_CREDS environment variable is not defined");
+}
+const serviceAccount = JSON.parse(process.env.GOOGLE_CREDS);
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccount)
 });
 console.log("Firebase Admin initialized");
 
